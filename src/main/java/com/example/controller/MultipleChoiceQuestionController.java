@@ -29,8 +29,8 @@ public class MultipleChoiceQuestionController {
     MultipleChoiceQuestionService multipleChoiceQuestionService;
     
     @PostMapping
-    public ResponseEntity<SuccessResponse> savQuestion(@RequestBody MultipleChoiceQuestion question){
-        MultipleChoiceQuestion questionSaved = multipleChoiceQuestionService.savQuestion(question);
+    public ResponseEntity<SuccessResponse> saveQuestion(@RequestBody MultipleChoiceQuestion question){
+        MultipleChoiceQuestion questionSaved = multipleChoiceQuestionService.saveQuestion(question);
         SuccessResponse successResponse = new SuccessResponse("Question created Successfully", HttpStatus.CREATED.value(), questionSaved); 
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }

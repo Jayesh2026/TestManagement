@@ -7,7 +7,7 @@ import com.example.model.MultipleChoiceQuestion;
 public interface MultipleChoiceQuestionService {
 
     // save new question
-    public MultipleChoiceQuestion savQuestion(MultipleChoiceQuestion question);
+    public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question);
     
     // get all questions
     public List<MultipleChoiceQuestion> getAllQuestionsData();

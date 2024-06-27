@@ -21,7 +21,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     @Autowired
     MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
 
-    public MultipleChoiceQuestion savQuestion(MultipleChoiceQuestion question) {
+    public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question) {
         if (question == null) {
             throw new ObjectIsNullException("Question cannot be null");
         }

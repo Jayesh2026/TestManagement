@@ -47,7 +47,7 @@ public class MultipleChoiceQuestionServiceTest {
         question.setNegativeMark("-1");
 
         when(multipleChoiceQuestionRepository.save(any(MultipleChoiceQuestion.class))).thenReturn(question);
-        MultipleChoiceQuestion savedQuestion = multipleChoiceQuestionService.savQuestion(question);
+        MultipleChoiceQuestion savedQuestion = multipleChoiceQuestionService.saveQuestion(question);
         verify(multipleChoiceQuestionRepository, times(1)).save(any(MultipleChoiceQuestion.class));
 
         assertNotNull(savedQuestion);
@@ -112,15 +112,22 @@ public class MultipleChoiceQuestionServiceTest {
         existingQuestion.setQuestion("Question");
         existingQuestion.setOptionOne("OptionA");
         existingQuestion.setOptionTwo("OptionB");
+        existingQuestion.setOptionThree("OptionC");
+        existingQuestion.setOptionFour("OptionD");
         existingQuestion.setCorrectOption("1");
+        existingQuestion.setPositiveMark("4");
+        existingQuestion.setNegativeMark("-1");
 
-        // Mock updated question data
         MultipleChoiceQuestion updatedQuestionData = new MultipleChoiceQuestion();
         updatedQuestionData.setCategory("Java");
         updatedQuestionData.setQuestion("Question is a Question");
         updatedQuestionData.setOptionOne("Option_1");
-        updatedQuestionData.setOptionTwo("Option_1");
+        updatedQuestionData.setOptionTwo("Option_2");
+        updatedQuestionData.setOptionThree("Option_3");
+        updatedQuestionData.setOptionFour("Option_4");
         updatedQuestionData.setCorrectOption("2");
+        updatedQuestionData.setPositiveMark("4");
+        updatedQuestionData.setNegativeMark("-1");
 
         when(multipleChoiceQuestionRepository.findById(questionId)).thenReturn(Optional.of(existingQuestion));
         when(multipleChoiceQuestionRepository.save(any())).thenReturn(updatedQuestionData);
@@ -131,9 +138,13 @@ public class MultipleChoiceQuestionServiceTest {
         assertEquals("Java", updatedQuestion.getCategory());
         assertEquals("Question is a Question", updatedQuestion.getQuestion());
         assertEquals("Option_1", updatedQuestion.getOptionOne());
-        assertEquals("Option_1", updatedQuestion.getOptionTwo());
+        assertEquals("Option_2", updatedQuestion.getOptionTwo());
+        assertEquals("Option_3", updatedQuestion.getOptionThree());
+        assertEquals("Option_4", updatedQuestion.getOptionFour());
         assertEquals("2", updatedQuestion.getCorrectOption());
-
+        assertEquals("4", updatedQuestion.getPositiveMark());
+        assertEquals("-1", updatedQuestion.getNegativeMark());
+        
         verify(multipleChoiceQuestionRepository, times(1)).findById(questionId);
         verify(multipleChoiceQuestionRepository, times(1)).save(any());
     }
