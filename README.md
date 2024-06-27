@@ -56,3 +56,9 @@ To build and run the application locally:
    ```bash
    git clone https://github.com/Jayesh2026/TestManagement.git
    cd multiple-choice-question-api
+3. Open the project in your preferred Integrated Development Environment (IDE) or navigate to the project directory using a terminal or command prompt.
+4. Ensure that you have the build.gradle file in the project root directory. This file should contain the project configuration and dependencies.
+5. Build the project using Gradle by running the following command in the project directory:
+
+   ```bash
+   ./gradlew build
