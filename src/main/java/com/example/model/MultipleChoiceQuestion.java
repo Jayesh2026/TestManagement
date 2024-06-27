@@ -20,11 +20,12 @@ public class MultipleChoiceQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer questionId;
     String category;
+    String question;
     String optionOne;
     String optionTwo;
     String optionThree;
     String optionFour;
-    Integer correctOption;
+    String correctOption;
     Integer positiveMark;
     Integer negativeMark;
 }
