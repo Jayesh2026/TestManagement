@@ -1,30 +1,23 @@
 package com.example.service;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.example.model.MultipleChoiceQuestion;
-import com.example.repository.MultipleChoiceQuestionRepository;
 
-@Service
-public class MultipleChoiceQuestionService {
+public interface MultipleChoiceQuestionService {
 
-    @Autowired
-    MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+    // save new question
+    public MultipleChoiceQuestion savQuestion(MultipleChoiceQuestion question);
     
-    public MultipleChoiceQuestion savQuestion(MultipleChoiceQuestion question){
-        return multipleChoiceQuestionRepository.save(question);
-    }
+    // get all questions
+    public List<MultipleChoiceQuestion> getAllQuestionsData();
+    
+    // get question data by Id
+    public MultipleChoiceQuestion getQuestionData(Integer questionId);
 
-    public List<MultipleChoiceQuestion> getAllQuestionsData(){
-        return multipleChoiceQuestionRepository.findAll();
-    }
+    // update question
+    public MultipleChoiceQuestion updateQuestion(Integer questionId, MultipleChoiceQuestion question);
 
-    public MultipleChoiceQuestion getQuestionData(Integer questionId){
-        Optional<MultipleChoiceQuestion> questionData = multipleChoiceQuestionRepository.findById(questionId);
-        return questionData.orElseThrow(() -> new RuntimeException("Question not found"));
-    }
+    // delete question by ID
+    public void deleteQuestion(Integer questionId);
 }
