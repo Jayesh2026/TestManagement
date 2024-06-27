@@ -26,6 +26,6 @@ public class MultipleChoiceQuestion {
     String optionThree;
     String optionFour;
     String correctOption;
-    Integer positiveMark;
-    Integer negativeMark;
+    String positiveMark;
+    String negativeMark;
 }
