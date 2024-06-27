@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.MultipleChoiceQuestion;
@@ -31,6 +32,12 @@ public class MultipleChoiceQuestionController {
     public ResponseEntity<List<MultipleChoiceQuestion>> getAllQuestionsData(){
         List<MultipleChoiceQuestion> allQuestions = multipleChoiceQuestionService.getAllQuestionsData();
         return new ResponseEntity<>(allQuestions, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<MultipleChoiceQuestion> getQuestionById(@RequestParam("questionId") Integer questionId){
+        MultipleChoiceQuestion question = multipleChoiceQuestionService.getQuestionData(questionId);
+        return new ResponseEntity<>(question, HttpStatus.OK);
     }
 
 }
