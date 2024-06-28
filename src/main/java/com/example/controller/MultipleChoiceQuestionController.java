@@ -63,7 +63,6 @@ public class MultipleChoiceQuestionController {
         successResponse.setMessage("Question deleted successfully");
             successResponse.setStatusCode(HttpStatus.OK.value());
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
-
     }
 
 }
