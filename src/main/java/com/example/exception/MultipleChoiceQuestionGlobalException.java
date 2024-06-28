@@ -17,8 +17,8 @@ public class MultipleChoiceQuestionGlobalException {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> updateIllegalArgumentException(IllegalArgumentException objectNullException){
-        ErrorResponse errorResponse = new ErrorResponse(objectNullException.getMessage(), HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<ErrorResponse> updateIllegalArgumentException(IllegalArgumentException illegalArgException){
+        ErrorResponse errorResponse = new ErrorResponse(illegalArgException.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
