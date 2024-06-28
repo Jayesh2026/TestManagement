@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,6 @@ public class MultipleChoiceQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer questionId;
-    String category;
     String question;
     String optionOne;
     String optionTwo;
@@ -28,4 +29,8 @@ public class MultipleChoiceQuestion {
     String correctOption;
     String positiveMark;
     String negativeMark;
+
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id")
+    Subcategory subcategory;
 }
