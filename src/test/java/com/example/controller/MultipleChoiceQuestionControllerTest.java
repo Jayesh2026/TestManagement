@@ -3,7 +3,7 @@ package com.example.controller;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -36,16 +36,8 @@ public class MultipleChoiceQuestionControllerTest {
 
     @Test
     void testSaveQuestion() {
-        MultipleChoiceQuestion question = new MultipleChoiceQuestion();
-        question.setCategory("Java");
-        question.setQuestion("Question is a Question ?");
-        question.setOptionOne("Option 1");
-        question.setOptionTwo("Option 2");
-        question.setOptionThree("Option 3");
-        question.setOptionFour("Option 4");
-        question.setCorrectOption("1");
-        question.setPositiveMark("3");
-        question.setNegativeMark("-1");
+        MultipleChoiceQuestion question = new MultipleChoiceQuestion(1, "Java", "Question", "OptionA",
+        "OptionB", "OptionC", "OptionD", "1", "3", "-1");
 
         when(multipleChoiceQuestionService.saveQuestion(question)).thenReturn(question);
         SuccessResponse successResponse = new SuccessResponse("Question created Successfully", HttpStatus.CREATED.value(), question);
@@ -56,33 +48,15 @@ public class MultipleChoiceQuestionControllerTest {
 
     @Test
     void testGetAllQuestionsData() {
-        MultipleChoiceQuestion question1 = new MultipleChoiceQuestion();
-        question1.setQuestionId(1);
-        question1.setCategory("SpringBoot");
-        question1.setOptionOne("@Controller and @PostMapping");
-        question1.setOptionTwo("@Controller and @Component");
-        question1.setOptionThree("@Controller and @ResponseBody");
-        question1.setOptionFour("@Controller and @ResponseStatus");
-        question1.setCorrectOption("@Controller and @ResponseBody");
-        question1.setPositiveMark("3");
-        question1.setNegativeMark("-1");
+        List<MultipleChoiceQuestion> questionList = new ArrayList<>();
+        questionList.add(new MultipleChoiceQuestion(1, "save 1", "save question", "option A", "option B", "option C",
+                "option D", "option A", "3", "-1"));
+        questionList.add(new MultipleChoiceQuestion(1, "save 2", "save question1", "option A1", "option B1", "option C1",
+                "option D1", "option A1", "3", "-1"));
 
-        MultipleChoiceQuestion question2 = new MultipleChoiceQuestion();
-        question2.setCategory("Java");
-        question2.setQuestion("Question is a Question");
-        question2.setOptionOne("Option_1");
-        question2.setOptionTwo("Option_2");
-        question2.setOptionThree("Option_3");
-        question2.setOptionFour("Option_4");
-        question2.setCorrectOption("2");
-        question2.setPositiveMark("4");
-        question2.setNegativeMark("-1");
+        when(multipleChoiceQuestionService.getAllQuestionsData()).thenReturn(questionList);
 
-        List<MultipleChoiceQuestion> mockQuestions = Arrays.asList(question1, question2);
-
-        when(multipleChoiceQuestionService.getAllQuestionsData()).thenReturn(mockQuestions);
-
-        SuccessResponse successResponse = new SuccessResponse("All Questions data retrieved successfully.", HttpStatus.OK.value(), mockQuestions);
+        SuccessResponse successResponse = new SuccessResponse("All Questions data retrieved successfully.", HttpStatus.OK.value(), questionList);
         ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(successResponse,HttpStatus.OK);
         ResponseEntity<SuccessResponse> response = multipleChoiceQuestionController.getAllQuestionsData();
         assertEquals(expectedResult,response);
@@ -91,28 +65,16 @@ public class MultipleChoiceQuestionControllerTest {
     @Test
     void testGetQuestionById() {
         int questionId = 1;
-        MultipleChoiceQuestion question = new MultipleChoiceQuestion();
-        question.setQuestionId(questionId);
-        question.setCategory("Java");
-        question.setQuestion("Question is a Question");
-        question.setOptionOne("Option_1");
-        question.setOptionTwo("Option_2");
-        question.setOptionThree("Option_3");
-        question.setOptionFour("Option_4");
-        question.setCorrectOption("2");
-        question.setPositiveMark("4");
-        question.setNegativeMark("-1");
+        MultipleChoiceQuestion question = new MultipleChoiceQuestion(1, "Java", "Question", "OptionA",
+        "OptionB", "OptionC", "OptionD", "1", "3", "-1");
 
         when(multipleChoiceQuestionService.getQuestionData(questionId)).thenReturn(question);
 
         SuccessResponse successResponse = new SuccessResponse("Question found and retrieved successfully.", HttpStatus.FOUND.value(), question);
         ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(successResponse, HttpStatus.FOUND);
-
         ResponseEntity<SuccessResponse> response = multipleChoiceQuestionController.getQuestionById(questionId);
 
-        assertEquals(expectedResult.getStatusCode(), response.getStatusCode());
-        assertEquals(expectedResult.getBody(), response.getBody());
-
+        assertEquals(expectedResult, response);
         verify(multipleChoiceQuestionService, times(1)).getQuestionData(questionId);
     }
 
@@ -135,12 +97,9 @@ public class MultipleChoiceQuestionControllerTest {
 
         SuccessResponse successResponse = new SuccessResponse("Question data updated successfully.", HttpStatus.OK.value(), updatedQuestion);
         ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(successResponse, HttpStatus.OK);
-
         ResponseEntity<SuccessResponse> response = multipleChoiceQuestionController.updateQuestion(questionId, updatedQuestion);
 
-        assertEquals(expectedResult.getStatusCode(), response.getStatusCode());
-        assertEquals(expectedResult.getBody(), response.getBody());
-
+        assertEquals(expectedResult, response);
         verify(multipleChoiceQuestionService, times(1)).updateQuestion(questionId, updatedQuestion);
     }
 
@@ -153,12 +112,9 @@ public class MultipleChoiceQuestionControllerTest {
         successResponse.setMessage("Question deleted successfully");
         successResponse.setStatusCode(HttpStatus.OK.value());
         ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(successResponse, HttpStatus.OK);
-
         ResponseEntity<SuccessResponse> response = multipleChoiceQuestionController.deleteQuestionById(questionId);
 
-        assertEquals(expectedResult.getStatusCode(), response.getStatusCode());
-        assertEquals(expectedResult.getBody(), response.getBody());
-
+        assertEquals(expectedResult, response);
         verify(multipleChoiceQuestionService, times(1)).deleteQuestion(questionId);
     }
 }

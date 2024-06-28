@@ -1,7 +1,6 @@
 package com.example.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -35,59 +34,39 @@ public class MultipleChoiceQuestionServiceTest {
 
     @Test
     public void testSaveQuestion() {
-        MultipleChoiceQuestion question = new MultipleChoiceQuestion();
-        question.setQuestionId(1);
-        question.setCategory("SpringBoot");
-        question.setOptionOne("@Controller and @PostMapping");
-        question.setOptionTwo("@Controller and @Component");
-        question.setOptionThree("@Controller and @ResponseBody");
-        question.setOptionFour("@Controller and @ResponseStatus");
-        question.setCorrectOption("@Controller and @ResponseBody");
-        question.setPositiveMark("3");
-        question.setNegativeMark("-1");
+        MultipleChoiceQuestion question = new MultipleChoiceQuestion(1, "Java", "Question", "OptionA",
+        "OptionB", "OptionC", "OptionD", "1", "3", "-1");
 
-        when(multipleChoiceQuestionRepository.save(any(MultipleChoiceQuestion.class))).thenReturn(question);
+        when(multipleChoiceQuestionRepository.save(question)).thenReturn(question);
         MultipleChoiceQuestion savedQuestion = multipleChoiceQuestionService.saveQuestion(question);
-        verify(multipleChoiceQuestionRepository, times(1)).save(any(MultipleChoiceQuestion.class));
+        verify(multipleChoiceQuestionRepository, times(1)).save(question);
 
-        assertNotNull(savedQuestion);
-        assertEquals(question.getQuestionId(), savedQuestion.getQuestionId());
-        assertEquals(question.getCategory(), savedQuestion.getCategory());
-        assertEquals(question.getOptionOne(), savedQuestion.getOptionOne());
-        assertEquals(question.getOptionTwo(), savedQuestion.getOptionTwo());
-        assertEquals(question.getOptionThree(), savedQuestion.getOptionThree());
-        assertEquals(question.getOptionFour(), savedQuestion.getOptionFour());
-        assertEquals(question.getCorrectOption(), savedQuestion.getCorrectOption());
-        assertEquals(question.getPositiveMark(), savedQuestion.getPositiveMark());
-        assertEquals(question.getNegativeMark(), savedQuestion.getNegativeMark());
+        assertEquals(question, savedQuestion);
     }
 
     @Test
     public void testGetAllQuestions() {
         List<MultipleChoiceQuestion> questionList = new ArrayList<>();
-        questionList.add(new MultipleChoiceQuestion(1, "save1", "save question", "option A", "option B", "option C",
+        questionList.add(new MultipleChoiceQuestion(1, "save 1", "save question", "option A", "option B", "option C",
                 "option D", "option A", "3", "-1"));
-        questionList.add(new MultipleChoiceQuestion(1, "save2", "save question1", "option A1", "option B1", "option C1",
+        questionList.add(new MultipleChoiceQuestion(1, "save 2", "save question1", "option A1", "option B1", "option C1",
                 "option D1", "option A1", "3", "-1"));
 
         when(multipleChoiceQuestionRepository.findAll()).thenReturn(questionList);
-
         List<MultipleChoiceQuestion> fetchedList = multipleChoiceQuestionService.getAllQuestionsData();
-
         assertEquals(questionList, fetchedList);
     }
 
     @Test
     public void testGetQuestionDataById() {
-        Integer questionId = 123;
+        Integer questionId = 1;
         MultipleChoiceQuestion question = new MultipleChoiceQuestion();
         question.setQuestionId(questionId);
 
         when(multipleChoiceQuestionRepository.findById(questionId)).thenReturn(Optional.of(question));
-
         MultipleChoiceQuestion questionRetrieved = multipleChoiceQuestionService.getQuestionData(questionId);
-
         verify(multipleChoiceQuestionRepository).findById(questionId);
+
         assertEquals(question, questionRetrieved);
     }
 
@@ -104,7 +83,7 @@ public class MultipleChoiceQuestionServiceTest {
     }
 
     @Test
-    void testUpdateQuestion_ValidUpdate() {
+    void testUpdateQuestion() {
         Integer questionId = 1;
         MultipleChoiceQuestion existingQuestion = new MultipleChoiceQuestion();
         existingQuestion.setQuestionId(questionId);
@@ -119,6 +98,7 @@ public class MultipleChoiceQuestionServiceTest {
         existingQuestion.setNegativeMark("-1");
 
         MultipleChoiceQuestion updatedQuestionData = new MultipleChoiceQuestion();
+        updatedQuestionData.setQuestionId(questionId);
         updatedQuestionData.setCategory("Java");
         updatedQuestionData.setQuestion("Question is a Question");
         updatedQuestionData.setOptionOne("Option_1");
@@ -130,23 +110,13 @@ public class MultipleChoiceQuestionServiceTest {
         updatedQuestionData.setNegativeMark("-1");
 
         when(multipleChoiceQuestionRepository.findById(questionId)).thenReturn(Optional.of(existingQuestion));
-        when(multipleChoiceQuestionRepository.save(any())).thenReturn(updatedQuestionData);
-
+        when(multipleChoiceQuestionRepository.save(updatedQuestionData)).thenReturn(updatedQuestionData);
         MultipleChoiceQuestion updatedQuestion = multipleChoiceQuestionService.updateQuestion(questionId, updatedQuestionData);
 
-        assertNotNull(updatedQuestion);
-        assertEquals("Java", updatedQuestion.getCategory());
-        assertEquals("Question is a Question", updatedQuestion.getQuestion());
-        assertEquals("Option_1", updatedQuestion.getOptionOne());
-        assertEquals("Option_2", updatedQuestion.getOptionTwo());
-        assertEquals("Option_3", updatedQuestion.getOptionThree());
-        assertEquals("Option_4", updatedQuestion.getOptionFour());
-        assertEquals("2", updatedQuestion.getCorrectOption());
-        assertEquals("4", updatedQuestion.getPositiveMark());
-        assertEquals("-1", updatedQuestion.getNegativeMark());
-        
+        assertEquals(updatedQuestionData, updatedQuestion);
+
         verify(multipleChoiceQuestionRepository, times(1)).findById(questionId);
-        verify(multipleChoiceQuestionRepository, times(1)).save(any());
+        verify(multipleChoiceQuestionRepository, times(1)).save(updatedQuestionData);
     }
 
 }
