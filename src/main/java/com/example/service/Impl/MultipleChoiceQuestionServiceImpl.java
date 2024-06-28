@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.service.Impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +12,7 @@ import com.example.exception.ObjectIsNullException;
 import com.example.exception.QuestionNotFoundException;
 import com.example.model.MultipleChoiceQuestion;
 import com.example.repository.MultipleChoiceQuestionRepository;
+import com.example.service.MultipleChoiceQuestionService;
 
 @Service
 public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestionService {
@@ -21,6 +22,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     @Autowired
     MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
 
+    @Override
     public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question) {
         if (question == null) {
             throw new ObjectIsNullException("Question cannot be null");
@@ -33,6 +35,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         }
     }
 
+    @Override
     public List<MultipleChoiceQuestion> getAllQuestionsData() {
         List<MultipleChoiceQuestion> questions = multipleChoiceQuestionRepository.findAll();
         if (questions == null || questions.isEmpty()) {
@@ -41,6 +44,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         return questions;
     }
 
+    @Override
     public MultipleChoiceQuestion getQuestionData(Integer questionId) {
         Optional<MultipleChoiceQuestion> questionData = multipleChoiceQuestionRepository.findById(questionId);
 
@@ -59,8 +63,8 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         try {
             MultipleChoiceQuestion updateQuestionData = existingQuestion.get();
 
-            if (question.getCategory() != null) {
-                updateQuestionData.setCategory(question.getCategory());
+            if (question.getSubcategory() != null) {
+                updateQuestionData.setSubcategory(question.getSubcategory());
             }
             if (question.getQuestion() != null) {
                 updateQuestionData.setQuestion(question.getQuestion());
