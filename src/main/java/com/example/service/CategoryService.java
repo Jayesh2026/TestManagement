@@ -10,9 +10,9 @@ public interface CategoryService {
 
     public List<Category> getAllCategories();
 
-    public Category getCategoryByIdOrCategoryName(Category category);
+    public Category getCategoryByCategoryName(String categoryName);
 
-    public Category updateCategory(Category category);
+    public Category updateCategory(String categoryName, Category category);
 
-    public void deleteCategoryById(Integer categoryId);
+    void deleteCategoryByName(String categoryName);
 }
