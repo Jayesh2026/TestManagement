@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.exception.ObjectIsNullException;
 import com.example.exception.QuestionNotFoundException;
 import com.example.model.MultipleChoiceQuestion;
 import com.example.repository.MultipleChoiceQuestionRepository;
+import com.example.repository.SubCategoryRepository;
 import com.example.service.MultipleChoiceQuestionService;
 
 @Service
@@ -22,10 +22,13 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     @Autowired
     MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
 
+    @Autowired
+    SubCategoryRepository subCategoryRepository;
+
     @Override
     public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question) {
         if (question == null) {
-            throw new ObjectIsNullException("Question cannot be null");
+            throw new IllegalArgumentException("Question cannot be null");
         }
         try {
             return multipleChoiceQuestionRepository.save(question);
