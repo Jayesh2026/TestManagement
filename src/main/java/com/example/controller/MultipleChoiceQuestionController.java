@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/questions")
+@RequestMapping("/api/questions")
 public class MultipleChoiceQuestionController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class MultipleChoiceQuestionController {
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get-all")
+    @GetMapping("/")
     public ResponseEntity<SuccessResponse> getAllQuestionsData(){
         List<MultipleChoiceQuestion> allQuestions = multipleChoiceQuestionService.getAllQuestionsData();
         SuccessResponse successResponse = new SuccessResponse("All Questions data retrieved successfully.", HttpStatus.OK.value(), allQuestions);
