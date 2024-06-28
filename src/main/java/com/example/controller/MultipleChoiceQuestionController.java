@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.MultipleChoiceQuestion;
@@ -42,8 +41,8 @@ public class MultipleChoiceQuestionController {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<SuccessResponse> getQuestionById(@RequestParam("questionId") Integer questionId){
+    @GetMapping("/{questionId}")
+    public ResponseEntity<SuccessResponse> getQuestionById(@PathVariable("questionId") Integer questionId){
         MultipleChoiceQuestion question = multipleChoiceQuestionService.getQuestionData(questionId);
         SuccessResponse successResponse = new SuccessResponse("Question found and retrieved successfully.", HttpStatus.FOUND.value(), question);
         return new ResponseEntity<>(successResponse, HttpStatus.FOUND);
