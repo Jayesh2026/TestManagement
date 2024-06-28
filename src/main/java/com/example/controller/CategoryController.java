@@ -34,7 +34,7 @@ public class CategoryController {
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<SuccessResponse> getAllCategory() {
         List<Category> categoryList = categoryService.getAllCategories();
         SuccessResponse successResponse = new SuccessResponse("All Categories are retrieved successfully.",
