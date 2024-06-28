@@ -53,7 +53,7 @@ public class SubcategoryController {
     public ResponseEntity<SuccessResponse> updateSubCategory(@PathVariable("subCategoryId") Integer subCategoryId,
             @RequestBody SubCategory subCategory) {
         SubCategory updatedSubCategory = subCategoryService.updateSubCategory(subCategoryId, subCategory);
-        SuccessResponse successResponse = new SuccessResponse("SubCategory retrieved Successfully.",
+        SuccessResponse successResponse = new SuccessResponse("SubCategory updated Successfully.",
                 HttpStatus.OK.value(), updatedSubCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
