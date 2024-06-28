@@ -3,9 +3,11 @@ package com.example.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Category;
@@ -29,13 +31,15 @@ public class CategoryController {
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }
 
+    @GetMapping
     public ResponseEntity<SuccessResponse> getAllCategory(){
         List<Category> categoryList = categoryService.getAllCategories();
         SuccessResponse successResponse = new SuccessResponse("All Categories are retrieved successfully.", HttpStatus.OK.value(), categoryList);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<SuccessResponse> getCategoryByName(@RequestBody String categoryName){
+    @GetMapping("/")
+    public ResponseEntity<SuccessResponse> getCategoryByName(@RequestParam("categoryName") String categoryName){
         Category category = categoryService.getCategoryByCategoryName(categoryName);
         SuccessResponse successResponse = new SuccessResponse("All Categories are retrieved successfully.", HttpStatus.FOUND.value(), category);
         return new ResponseEntity<>(successResponse, HttpStatus.FOUND);
