@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Subcategory {
+public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
