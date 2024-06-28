@@ -1,5 +1,6 @@
 package com.example.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +31,7 @@ public class MultipleChoiceQuestion {
     String positiveMark;
     String negativeMark;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subcategory_id")
-    Subcategory subcategory;
+    SubCategory subcategory;
 }
