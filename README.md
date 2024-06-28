@@ -1,64 +1,192 @@
 # TestManagement
-# Multiple Choice Question Test Management API
 
-This Spring Boot application manages multiple-choice questions for tests, providing CRUD operations through RESTful API endpoints.
+TestManagement is a Spring Boot application for managing multiple-choice questions via REST API.
 
-## Overview
+## Table of Contents
+- [Introduction](#introduction)
+- [Technologies Used](#technologies-used)
+- [Setup Instructions](#setup-instructions)
+  - [Prerequisites](#prerequisites)
+  - [Clone the Repository](#clone-the-repository)
+  - [Database Configuration](#database-configuration)
+  - [Run the Application](#run-the-application)
+- [API Endpoints](#api-endpoints)
+  - [Create MCQ Question](#create-mcq-question)
+  - [Read All Questions](#read-all-questions)
+  - [Read Specific Question](#read-specific-question)
+  - [Update Question](#update-question)
+  - [Delete Question](#delete-question)
+- [Category and Subcategory Operations](#category-and-subcategory-operations)
+    - [Category CRUD Operations](#category-crud-operations)
+      - [Create Category](#create-category)
+      - [Read All Categories](#read-all-categories)
+      - [Update Category](#update-category)
+      - [Delete Category](#delete-category)
+    - [Subcategory CRUD Operations](#subcategory-crud-operations)
+      - [Create Subcategory](#create-subcategory)
+      - [Read All Subcategories](#read-all-subcategories)
+      - [Update Subcategory](#update-subcategory)
+      - [Delete Subcategory](#delete-subcategory)
 
-The project implements a simple CRUD application using Spring Boot and Spring Data JPA. It allows users to create, read, update, and delete multiple-choice questions for tests.
+
+## Introduction
+This project, TestManagement, is designed to facilitate the management of multiple-choice questions (MCQs) through a RESTful API. It allows users to perform CRUD operations on MCQ questions stored in a PostgreSQL database. Each question includes details such as category, options, correct answer, and scoring.
+
+## Technologies Used
+- Spring Boot 3 (latest)
+- PostgreSQL
+- Hibernate (as the JPA implementation)
+- JUnit 5
+- Graddle (for dependency management)
+- Postman (for API testing)
+
+## Setup Instructions
+### Prerequisites
+Make sure you have the following installed:
+- Java 21 SDK
+- Graddle
+- PostgreSQL
+
+### Clone the Repository
+Clone the TestManagement repository from GitHub:
+- git clone https://github.com/Jayesh2026/TestManagement.git
+- cd TestManagement
+
+## Database Configuration
+
+### Create Database
+
+Create a PostgreSQL database named TestManagementDB.
+
+### Configure Database Connection
+
+Update `application.properties` file located in `src/main/resources` with your PostgreSQL database configuration:
+
+```properties
+server.port=8081
+spring.datasource.url=jdbc:postgresql://localhost:5432/TestManagementDB
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=update
+```
+
+## Setup Instructions
+
+### Run the Application
+To start the application, navigate to the root directory of the project and run:
+```bash
+mvn spring-boot:run
+```
 
 ## API Endpoints
 
-### Controller Layer
+### Create MCQ Question
 
-The controller layer handles HTTP requests and routes them to corresponding service methods.
+**POST** `(http://localhost:8081/api/questions)`
 
-- **Create a question**: `POST /questions`
-- **Retrieve all questions**: `GET /questions/get-all`
-- **Retrieve a specific question by ID**: `GET /questions/{questionId}`
-- **Update a specific question by ID**: `PUT /questions{questionId}`
-- **Delete a specific question by ID**: `DELETE /questions/{questionId}`
+Create a new MCQ question using JSON payload in the request body.
 
-### Service Layer
+#### Example Request Body:
 
-The service layer contains business logic for managing multiple-choice questions.
+```json
+{
+    "question": "Which of the following is not a primitive data type in Java?",
+    "optionOne": "int",
+    "optionTwo": "float",
+    "optionThree": "boolean",
+    "optionFour": "String",
+    "correctOption": "String",
+    "positiveMark": "2",
+    "negativeMark": "-0.5",
+    "subcategory": {
+        "subcategoryName": "Java Basics",
+        "subcategoryDescription": "Fundamental concepts of Java programming language",
+        "category": {
+            "categoryName": "Java",
+            "categoryDescription": "Core Java Category"
+        }
+    }
+}
 
-Service Methods:
-- `saveQuestion(MultipleChoiceQuestion question)`: Creates a new question.
-- `getAllQuestionsData()`: Retrieves all questions.
-- `getQuestionById(Integer questionId)`: Retrieves a specific question by ID.
-- `updateQuestion(Integer questionId, MultipleChoiceQuestion updatedQuestion)`: Updates a specific question by ID.
-- `deleteQuestion(Integer questionId)`: Deletes a specific question by ID.
+```
+## API Endpoints
 
-### Repository Layer
+### Read All Questions
 
-The repository layer interfaces with the database using Spring Data JPA repositories to perform CRUD operations on `MultipleChoiceQuestion` entities.
+**GET** `(http://localhost:8081/api/questions/)`
 
-### Model Layer
+Retrieve all MCQ questions stored in the database.
 
-The model layer defines the structure of `MultipleChoiceQuestion` entities using JPA annotations. It includes attributes such as question text, options, correct answer, category, etc.
+### Read Specific Question
 
-### Database Connectivity
+**GET** `(http://localhost:8081/api/questions/5)`
 
-The application uses Spring Data JPA and is configured via `application.properties` for database connectivity with PostgreSQL.
+Retrieve a specific MCQ question by its `questionId`.
 
-### Testing
+### Update Question
 
-Unit tests are implemented using JUnit 5 and Mockito, covering controller and service layer methods.
+**PUT** `(http://localhost:8081/api/questions/5)`
 
-## Build Steps
+Update an existing MCQ question identified by `questionId` using JSON payload in the request body.
 
-To build and run the application locally:
+### Delete Question
 
-1. Ensure you have JDK 21 installed on your machine.
-2. Clone the repository:
+**DELETE** `(http://localhost:8081/api/questions/5)`
 
-   ```bash
-   git clone https://github.com/Jayesh2026/TestManagement.git
-   cd multiple-choice-question-api
-3. Open the project in your preferred Integrated Development Environment (IDE) or navigate to the project directory using a terminal or command prompt.
-4. Ensure that you have the build.gradle file in the project root directory. This file should contain the project configuration and dependencies.
-5. Build the project using Gradle by running the following command in the project directory:
+Delete an existing MCQ question identified by `questionId`.
 
-   ```bash
-   ./gradlew build
+
+# Category and Subcategory Operations
+
+## Category CRUD Operations
+
+### Create Category
+
+**POST** `http://localhost:8081/api/category`
+
+Create a new category using JSON payload in the request body.
+
+### Read All Categories
+
+**GET** `http://localhost:8081/api/category/`
+
+Retrieve all categories stored in the database.
+
+### Update Category
+
+**PUT** `http://localhost:8081/api/category/{categoryId}`
+
+Update an existing category identified by categoryId using JSON payload in the request body.
+
+### Delete Category
+
+**DELETE** `http://localhost:8081/api/category/{categoryId}`
+
+Delete an existing category identified by categoryId.
+
+## Subcategory CRUD Operations
+
+### Create Subcategory
+
+**POST** `http://localhost:8081/api/subCategory`
+
+Create a new subcategory using JSON payload in the request body.
+
+### Read All Subcategories
+
+**GET** `http://localhost:8081/api/subCategory/`
+
+Retrieve all subcategories stored in the database.
+
+### Update Subcategory
+
+**PUT** `http://localhost:8081/api/subCategory/{categoryId}`
+
+Update an existing subcategory identified by subcategoryId using JSON payload in the request body.
+
+### Delete Subcategory
+
+**DELETE** `http://localhost:8081/api/subCategory/{id}`
+
+Delete an existing subcategory identified by subcategoryId.
+
