@@ -51,8 +51,8 @@ public class SubcategoryController {
 
     @PutMapping("/{subCategoryId}")
     public ResponseEntity<SuccessResponse> updateSubCategory(@PathVariable("subCategoryId") Integer subCategoryId,
-            @RequestBody SubCategory subCategory) {
-        SubCategory updatedSubCategory = subCategoryService.updateSubCategory(subCategoryId, subCategory);
+            @RequestBody SubCategory subCategoryUpdate) {
+        SubCategory updatedSubCategory = subCategoryService.updateSubCategory(subCategoryId, subCategoryUpdate);
         SuccessResponse successResponse = new SuccessResponse("SubCategory updated Successfully.",
                 HttpStatus.OK.value(), updatedSubCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
