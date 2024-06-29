@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.exception.QuestionNotFoundException;
+import com.example.exception.DataNotFoundException;
 import com.example.model.MultipleChoiceQuestion;
 import com.example.repository.MultipleChoiceQuestionRepository;
 import com.example.repository.SubCategoryRepository;
@@ -42,7 +42,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     public List<MultipleChoiceQuestion> getAllQuestionsData() {
         List<MultipleChoiceQuestion> questions = multipleChoiceQuestionRepository.findAll();
         if (questions == null || questions.isEmpty()) {
-            throw new QuestionNotFoundException("Unable to retrieved questions, Not found any question.");
+            throw new DataNotFoundException("Unable to retrieved questions, Not found any question.");
         }
         return questions;
     }
@@ -52,7 +52,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         Optional<MultipleChoiceQuestion> questionData = multipleChoiceQuestionRepository.findById(questionId);
 
         if(!questionData.isPresent()){
-            throw new QuestionNotFoundException("This question is not present.");
+            throw new DataNotFoundException("This question is not present.");
         }
         return questionData.get();
     }
@@ -61,7 +61,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     public MultipleChoiceQuestion updateQuestion(Integer questionId, MultipleChoiceQuestion question) {
         Optional<MultipleChoiceQuestion> existingQuestion = multipleChoiceQuestionRepository.findById(questionId);
         if (!existingQuestion.isPresent()) {
-            throw new QuestionNotFoundException("This Question is not found with ID: " + questionId);
+            throw new DataNotFoundException("This Question is not found with ID: " + questionId);
         }
         try {
             MultipleChoiceQuestion updateQuestionData = existingQuestion.get();
@@ -103,11 +103,10 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     @Override
     public void deleteQuestion(Integer questionId) {
         Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionRepository.findById(questionId);
-    
-        if(question.isPresent()){
-            multipleChoiceQuestionRepository.deleteById(questionId);
-        }else{
-            throw new QuestionNotFoundException("This question Id is not found.");
+        if(!question.isPresent()){
+            throw new DataNotFoundException("This question Id is not found.");
         }
+
+        multipleChoiceQuestionRepository.deleteById(questionId);
     }
 }
