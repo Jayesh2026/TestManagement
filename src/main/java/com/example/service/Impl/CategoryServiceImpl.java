@@ -78,10 +78,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategoryById(Integer categoryId) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        if (optionalCategory.isPresent()) {
-            categoryRepository.deleteById(categoryId);
-        } else {
+        if (!optionalCategory.isPresent()) {
             throw new DataNotFoundException("Category with Id " + categoryId + " not found");
         }
+        categoryRepository.deleteById(categoryId);
     }
 }
