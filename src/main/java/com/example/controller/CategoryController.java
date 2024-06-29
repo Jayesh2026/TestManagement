@@ -29,33 +29,28 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<SuccessResponse> createCategory(@RequestBody Category category) {
         Category savedCategory = categoryService.createCategory(category);
-        SuccessResponse successResponse = new SuccessResponse("Category created Successfully.",
-                HttpStatus.CREATED.value(), savedCategory);
+        SuccessResponse successResponse = new SuccessResponse("Category created Successfully.", HttpStatus.CREATED.value(), savedCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<SuccessResponse> getAllCategory() {
         List<Category> categoryList = categoryService.getAllCategories();
-        SuccessResponse successResponse = new SuccessResponse("All Categories are retrieved successfully.",
-                HttpStatus.OK.value(), categoryList);
+        SuccessResponse successResponse = new SuccessResponse("All Categories are retrieved successfully.", HttpStatus.OK.value(), categoryList);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
     @GetMapping("/")
     public ResponseEntity<SuccessResponse> getCategoryByName(@RequestParam("categoryName") String categoryName) {
         Category category = categoryService.getCategoryByCategoryName(categoryName);
-        SuccessResponse successResponse = new SuccessResponse("Category is retrieved successfully.",
-                HttpStatus.FOUND.value(), category);
+        SuccessResponse successResponse = new SuccessResponse("Category is retrieved successfully.", HttpStatus.FOUND.value(), category);
         return new ResponseEntity<>(successResponse, HttpStatus.FOUND);
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("categoryId") Integer categoryId,
-            @RequestBody Category category) {
+    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("categoryId") Integer categoryId, @RequestBody Category category) {
         Category updateCategory = categoryService.updateCategory(categoryId, category);
-        SuccessResponse successResponse = new SuccessResponse("Category updated successfully.", HttpStatus.OK.value(),
-                updateCategory);
+        SuccessResponse successResponse = new SuccessResponse("Category updated successfully.", HttpStatus.OK.value(), updateCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
