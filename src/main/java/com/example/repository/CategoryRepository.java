@@ -11,9 +11,9 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     boolean existsByCategoryId(Integer categoryId);
 
-    boolean existsByCategoryName(String categoryName);
+    boolean existsByCategoryNameIgnoreCase(String categoryName);
 
-    Optional<Category> findByCategoryName(String categoryName);
+    Optional<Category> findByCategoryNameIgnoreCase(String categoryName);
 
     void deleteByCategoryName(String categoryName);
 }
