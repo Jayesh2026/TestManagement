@@ -62,9 +62,9 @@ public class CategoryServiceTest {
         String categoryName = "Category 1";
         Category category = new Category(1, categoryName, "Category description");
 
-        when(categoryRepository.findByCategoryName(categoryName)).thenReturn(Optional.of(category));
+        when(categoryRepository.findByCategoryNameIgnoreCase(categoryName)).thenReturn(Optional.of(category));
         Category returnedCategory = categoryServiceImpl.getCategoryByCategoryName(categoryName);
-        verify(categoryRepository, times(1)).findByCategoryName(categoryName);
+        verify(categoryRepository, times(1)).findByCategoryNameIgnoreCase(categoryName);
 
         assertEquals(category, returnedCategory);
     }
@@ -91,12 +91,12 @@ public class CategoryServiceTest {
         Category updatedCategory = new Category(categoryId, "Updated Category", "Updated category description");
 
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existingCategory));
-        when(categoryRepository.findByCategoryName(updatedCategory.getCategoryName())).thenReturn(Optional.empty());
+        when(categoryRepository.findByCategoryNameIgnoreCase(updatedCategory.getCategoryName())).thenReturn(Optional.empty());
         when(categoryRepository.save(existingCategory)).thenReturn(updatedCategory);
 
         Category returnedCategory = categoryServiceImpl.updateCategory(categoryId, updatedCategory);
         verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryRepository, times(1)).findByCategoryName(updatedCategory.getCategoryName());
+        verify(categoryRepository, times(1)).findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
         verify(categoryRepository, times(1)).save(existingCategory);
         assertEquals(updatedCategory, returnedCategory);
     }
