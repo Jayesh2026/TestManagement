@@ -88,12 +88,11 @@ public class CategoryControllerTest {
         Category updatedCategory = new Category(categoryId, "Updated Category Name", "Updated Category Description");
 
         when(categoryService.updateCategory(categoryId, updatedCategory)).thenReturn(updatedCategory);
+        SuccessResponse expectedResponse = new SuccessResponse("Category updated successfully.", HttpStatus.OK.value(), updatedCategory);
+        ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
         ResponseEntity<SuccessResponse> response = categoryController.updateCategory(categoryId, updatedCategory);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Category updated successfully.", response.getBody().getMessage());
-        assertEquals(HttpStatus.OK.value(), response.getBody().getStatusCode());
-
+        assertEquals(expectedResult, response);
         verify(categoryService, times(1)).updateCategory(categoryId, updatedCategory);
     }
 
