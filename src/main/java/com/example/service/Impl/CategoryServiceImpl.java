@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.exception.CategoryNotFoundException;
-import com.example.exception.DuplicateCategoryException;
+import com.example.exception.DataNotFoundException;
+import com.example.exception.DuplicateDataException;
 import com.example.exception.IllegalArgumentException;
 import com.example.model.Category;
 import com.example.repository.CategoryRepository;
@@ -25,8 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new IllegalArgumentException("Category should not be null");
         }
 
-        if (categoryRepository.existsByCategoryName(category.getCategoryName())) {
-            throw new DuplicateCategoryException("Category with name '" + category.getCategoryName() + "' already exists");
+        if (categoryRepository.existsByCategoryNameIgnoreCase(category.getCategoryName())) {
+            throw new DuplicateDataException("Category with name '" + category.getCategoryName() + "' already exists");
         }
 
         return categoryRepository.save(category);
@@ -36,33 +36,31 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         if (categories == null || categories.isEmpty()) {
-            throw new CategoryNotFoundException("Unable to retrieved all categories, Not found any question.");
+            throw new DataNotFoundException("Unable to retrieved all categories, Not found any category.");
         }
         return categories;
     }
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
-        Optional<Category> categoryData = categoryRepository.findByCategoryName(categoryName);
+        Optional<Category> categoryData = categoryRepository.findByCategoryNameIgnoreCase(categoryName);
         if(!categoryData.isPresent()){
-            throw new CategoryNotFoundException("Name of '" + categoryName + "' category is not present.");
+            throw new DataNotFoundException("Name of '" + categoryName + "' category is not present.");
         }
         return categoryData.get();
     }
 
     @Override
     public Category updateCategory(Integer categoryId, Category updatedCategory) {
-        Optional<Category> exitingCategory = categoryRepository.findById(categoryId);
-        if(!exitingCategory.isPresent()){
-            throw new CategoryNotFoundException("Category with name " + categoryId + " not found");
-        }
-
-        Category existingCategoryData = exitingCategory.get();
-
-        if (!existingCategoryData.getCategoryName().equals(updatedCategory.getCategoryName())) {
-            Optional<Category> categoryByNameOptional = categoryRepository.findByCategoryName(updatedCategory.getCategoryName());
+        Optional<Category> existingCategoryOptional = categoryRepository.findById(categoryId);
+    
+        Category existingCategoryData = existingCategoryOptional.orElseThrow(() ->
+                                                                    new DataNotFoundException("Category with Id " + categoryId + " not found"));
+    
+        if (!existingCategoryData.getCategoryName().equalsIgnoreCase(updatedCategory.getCategoryName())) {
+            Optional<Category> categoryByNameOptional = categoryRepository.findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
             if (categoryByNameOptional.isPresent()) {
-                throw new IllegalArgumentException("Category with name '" + updatedCategory.getCategoryName() + "' already exists");
+                throw new DuplicateDataException("Category with name '" + updatedCategory.getCategoryName() + "' already exists, along with Id number: " +categoryByNameOptional.get().getCategoryId());
             }
         }
 
@@ -83,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (optionalCategory.isPresent()) {
             categoryRepository.deleteById(categoryId);
         } else {
-            throw new CategoryNotFoundException("Category with Id " + categoryId + " not found");
+            throw new DataNotFoundException("Category with Id " + categoryId + " not found");
         }
     }
 }
