@@ -150,7 +150,7 @@ Create a new category using JSON payload in the request body.
 
 ### Read All Categories
 
-**GET** `http://localhost:8081/api/category/`
+**GET** `http://localhost:8081/api/category`
 
 Retrieve all categories stored in the database.
 
