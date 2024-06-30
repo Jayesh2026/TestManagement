@@ -49,7 +49,9 @@ Make sure you have the following installed:
 
 ### Clone the Repository
 Clone the TestManagement repository from GitHub:
-- git clone https://github.com/Jayesh2026/TestManagement.git
+```bash
+git clone https://github.com/Jayesh2026/TestManagement.git
+```
 - cd TestManagement
 
 ## Database Configuration
@@ -75,7 +77,7 @@ spring.jpa.hibernate.ddl-auto=update
 ### Run the Application
 To start the application, navigate to the root directory of the project and run:
 ```bash
-mvn spring-boot:run
+`./gradlew bootRun`
 ```
 
 ## API Endpoints
