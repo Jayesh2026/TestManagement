@@ -2,6 +2,8 @@ package com.example.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.model.MultipleChoiceQuestion;
 
 public interface MultipleChoiceQuestionService {
@@ -20,4 +22,6 @@ public interface MultipleChoiceQuestionService {
 
     // delete question by ID
     public void deleteQuestion(Integer questionId);
+
+    public void uploadBulkQuestionsFromExcelFile(MultipartFile multipartFile);
 }
