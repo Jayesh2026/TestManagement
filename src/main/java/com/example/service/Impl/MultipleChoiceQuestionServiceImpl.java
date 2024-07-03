@@ -66,7 +66,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         Optional<MultipleChoiceQuestion> questionData = multipleChoiceQuestionRepository.findById(questionId);
 
         if (!questionData.isPresent()) {
-            throw new DataNotFoundException("This question is not present.");
+            throw new DataNotFoundException("This question Id is not present.");
         }
         return questionData.get();
     }
@@ -120,6 +120,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         if (!question.isPresent()) {
             throw new DataNotFoundException("This question Id is not found.");
         }
+        question.get().setSubcategory(null);
         multipleChoiceQuestionRepository.deleteById(questionId);
     }
 
@@ -133,7 +134,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
             for (int rowIndex = sheet.getFirstRowNum()+1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
                 Row currentRow = sheet.getRow(rowIndex);
                 if (currentRow == null) {
-                    continue; // Skip if row is empty
+                    continue;
                 }
 
                 MultipleChoiceQuestion mcqQuestion = new MultipleChoiceQuestion();
