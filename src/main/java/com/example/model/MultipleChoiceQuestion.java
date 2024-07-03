@@ -1,5 +1,8 @@
 package com.example.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,5 +36,6 @@ public class MultipleChoiceQuestion {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subcategory_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     SubCategory subcategory;
 }
