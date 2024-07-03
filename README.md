@@ -113,6 +113,10 @@ Create a new MCQ question using JSON payload in the request body.
 ```
 ## API Endpoints
 
+### Add Bulk of Question data by Excel File (Note: use .xlsx extention excel file)
+
+**Post** `(http://localhost:8081/api/questions/saveBulkQuestions)`
+
 ### Read All Questions
 
 **GET** `(http://localhost:8081/api/questions/)`
