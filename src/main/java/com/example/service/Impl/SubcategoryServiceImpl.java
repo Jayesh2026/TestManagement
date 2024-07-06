@@ -76,8 +76,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public SubCategory updateSubCategory(Integer id, SubCategory subCategoryUpdate) {
-        Optional<SubCategory> optionalExistingSubCategory = subCategoryRepository.findById(id);
+    public SubCategory updateSubCategory(Integer subCategoryId, SubCategory subCategoryUpdate) {
+        Optional<SubCategory> optionalExistingSubCategory = subCategoryRepository.findById(subCategoryId);
         if (optionalExistingSubCategory.isPresent()) {
             SubCategory existingSubCategory = optionalExistingSubCategory.get();
 
@@ -90,10 +90,11 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             if (subCategoryUpdate.getCategory() != null) {
                 existingSubCategory.setCategory(subCategoryUpdate.getCategory());
             }
-
-            return subCategoryRepository.save(existingSubCategory);
+            SubCategory updatedSubCategory = subCategoryRepository.save(existingSubCategory);
+            logger.info("Subcategory updated of Id: {}", subCategoryId);
+            return updatedSubCategory;
         } else {
-            throw new DataNotFoundException("SubCategory with id " + id + " not found");
+            throw new DataNotFoundException("SubCategory with id: " + subCategoryId + " not found");
         }
     }
 
