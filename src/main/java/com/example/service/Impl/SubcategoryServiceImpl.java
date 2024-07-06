@@ -1,5 +1,7 @@
 package com.example.service.Impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.Optional;
 @Service
 public class SubCategoryServiceImpl implements SubCategoryService {
 
+    private final static Logger logger = LoggerFactory.getLogger(SubCategoryServiceImpl.class);
+
     @Autowired
     SubCategoryRepository subCategoryRepository;
 
@@ -25,39 +29,47 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Override
     public SubCategory saveSubCategory(SubCategory subCategory) {
-        Integer categoryId = subCategory.getCategory().getCategoryId();
-        String categoryName = subCategory.getCategory().getCategoryName();
-        String subcategoryName = subCategory.getSubcategoryName();
-    
+
         // Check if the category exists based on categoryId and categoryName
-        Category category = categoryRepository.findByCategoryIdAndCategoryNameIgnoreCase(categoryId, categoryName)
+        Category category = categoryRepository.findByCategoryIdAndCategoryNameIgnoreCase(subCategory.getCategory().getCategoryId(),
+                                                                                    subCategory.getCategory().getCategoryName())
                 .orElseThrow(() -> new DataNotFoundException(
-                        "Category with Id " + categoryId + " and name '" + categoryName + "' not found or Id and name are not associated with each other."));
-    
-        // Check if a subcategory with the same name and category exists
-        subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(subcategoryName, category)
+                        "Given Category 'Id' and 'Category Name' are not found OR Id and name are not associated with each other."));
+
+        // Check if a subcategory with the same name and in the same category exists
+        subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(subCategory.getSubcategoryName(), category)
                 .ifPresent(existingSubCategory -> {
                     throw new DuplicateDataException(
-                            "Subcategory with name '" + subcategoryName + "' already exists in '" + category.getCategoryName() + "' category.");
+                            "Subcategory with name '" + subCategory.getSubcategoryName() + "' already exists in '"+ category.getCategoryName() + "' category.");
                 });
-    
+
         subCategory.setCategory(category);
-        return subCategoryRepository.save(subCategory);
+        SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
+
+        return savedSubCategory;
     }
-    
+
     @Override
     public List<SubCategory> getAllSubCategories() {
-        List<SubCategory> subCategories = subCategoryRepository.findAll();
-        if (subCategories == null || subCategories.isEmpty()) {
-            throw new DataNotFoundException("Unable to retrieved all SubCategories, Not found any SubCategories.");
+        try{
+            logger.info("Fetching all Subcategories.");
+            List<SubCategory> subCategories = subCategoryRepository.findAll();
+            if (subCategories == null || subCategories.isEmpty()) {
+                throw new DataNotFoundException("Not found any SubCategories.");
+            }
+            logger.info("SubCategories fetched: {}", subCategories.size());
+            return subCategories;
+
+        }catch (Exception ex) {
+            logger.error("Error occurred while fetching Subcategories: {}", ex.getMessage());
+            throw new DataNotFoundException("Unable to fetch and retrieved all Subcategories");
         }
-        return subCategories;
     }
 
     @Override
     public SubCategory getSubCategoryById(Integer id) {
         Optional<SubCategory> subCategoryOptional = subCategoryRepository.findBySubcategoryId(id);
-        if(!subCategoryOptional.isPresent()){
+        if (!subCategoryOptional.isPresent()) {
             throw new DataNotFoundException("Id of '" + id + "' SubCategory is not present.");
         }
         return subCategoryOptional.get();
@@ -93,6 +105,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         // Remove the association with Category to avoid foreign key constraint violation
         subCategory.setCategory(null);
         subCategoryRepository.deleteById(subCategoryId);
+        logger.info("SubCategory deleted of Id: {}", subCategoryId);
     }
 
 }
