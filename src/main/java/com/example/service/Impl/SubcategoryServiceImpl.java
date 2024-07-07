@@ -30,47 +30,60 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     @Override
     public SubCategory saveSubCategory(SubCategory subCategory) {
 
-        // Check if the category exists based on categoryId and categoryName
-        Category category = categoryRepository.findByCategoryIdAndCategoryNameIgnoreCase(subCategory.getCategory().getCategoryId(),
-                                                                                    subCategory.getCategory().getCategoryName())
-                .orElseThrow(() -> new DataNotFoundException(
-                        "Given Category 'Id' and 'Category Name' are not found OR Id and name are not associated with each other."));
-
-        // Check if a subcategory with the same name and in the same category exists
-        subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(subCategory.getSubcategoryName(), category)
-                .ifPresent(existingSubCategory -> {
-                    throw new DuplicateDataException(
-                            "Subcategory with name '" + subCategory.getSubcategoryName() + "' already exists in '"+ category.getCategoryName() + "' category.");
+        Category category = categoryRepository.findById(subCategory.getCategory().getCategoryId())
+                .orElseThrow(() -> {
+                    String message = "Category with ID " + subCategory.getCategory().getCategoryId() + " not found.";
+                    logger.error(message);
+                    return new DataNotFoundException(message);
                 });
-
+                    
+    
+        if (!category.getCategoryName().equalsIgnoreCase(subCategory.getCategory().getCategoryName())) {
+            String message = "Category name '" + subCategory.getCategory().getCategoryName() + "' does not match with ID " + subCategory.getCategory().getCategoryId() + ".";
+            logger.error(message);
+            throw new DataNotFoundException(message);
+        }
+    
+        // Check if a subcategory with the same name already exists in the same category
+        Optional<SubCategory> existingSubCategory = subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(
+                subCategory.getSubcategoryName(), category);
+    
+        if (existingSubCategory.isPresent()) {
+            String message = "Subcategory with name '" + subCategory.getSubcategoryName() + "' already exists in category '" + category.getCategoryName() + "'.";
+            logger.error(message);
+            throw new DuplicateDataException(message);
+        }
+    
         subCategory.setCategory(category);
+    
         SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
-
+        logger.info("Subcategory '{}' saved successfully in category '{}'.", savedSubCategory.getSubcategoryName(), category.getCategoryName());
         return savedSubCategory;
     }
+    
 
     @Override
     public List<SubCategory> getAllSubCategories() {
-        try{
-            logger.info("Fetching all Subcategories.");
-            List<SubCategory> subCategories = subCategoryRepository.findAll();
-            if (subCategories == null || subCategories.isEmpty()) {
-                throw new DataNotFoundException("Not found any SubCategories.");
-            }
-            logger.info("SubCategories fetched: {}", subCategories.size());
-            return subCategories;
-
-        }catch (Exception ex) {
-            logger.error("Error occurred while fetching Subcategories: {}", ex.getMessage());
-            throw new DataNotFoundException("Unable to fetch and retrieved all Subcategories");
+        logger.info("Fetching all Subcategories.");
+        List<SubCategory> subCategories = subCategoryRepository.findAll();
+        if (subCategories.isEmpty()) {
+            String message = "Not found any SubCategories in database.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
+        
+        logger.info("SubCategories fetched: {}", subCategories.size());
+        return subCategories;
     }
+    
 
     @Override
-    public SubCategory getSubCategoryById(Integer id) {
-        Optional<SubCategory> subCategoryOptional = subCategoryRepository.findBySubcategoryId(id);
+    public SubCategory getSubCategoryById(Integer subCategoryId) {
+        Optional<SubCategory> subCategoryOptional = subCategoryRepository.findBySubcategoryId(subCategoryId);
         if (!subCategoryOptional.isPresent()) {
-            throw new DataNotFoundException("Id of '" + id + "' SubCategory is not present.");
+            String message = "Id of '" + subCategoryId + "' SubCategory is not present.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         return subCategoryOptional.get();
     }
@@ -94,7 +107,9 @@ public class SubCategoryServiceImpl implements SubCategoryService {
             logger.info("Subcategory updated of Id: {}", subCategoryId);
             return updatedSubCategory;
         } else {
-            throw new DataNotFoundException("SubCategory with id: " + subCategoryId + " not found");
+            String message = "SubCategory with id: " + subCategoryId + " not found";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
     }
 

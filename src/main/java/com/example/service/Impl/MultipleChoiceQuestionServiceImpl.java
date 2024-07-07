@@ -41,22 +41,17 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
 
     @Override
     public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question) {
-        if (question == null) {
-            throw new IllegalArgumentException("Question cannot be null");
-        }
-        try {
-            return multipleChoiceQuestionRepository.save(question);
-        } catch (Exception exception) {
-            logger.error("Error while saving question: {}", exception.getMessage());
-            throw new RuntimeException(exception);
-        }
+        return multipleChoiceQuestionRepository.save(question);
     }
 
     @Override
     public List<MultipleChoiceQuestion> getAllQuestionsData() {
+        logger.info("Fetching all MCQ Questions.");
         List<MultipleChoiceQuestion> questions = multipleChoiceQuestionRepository.findAll();
-        if (questions == null || questions.isEmpty()) {
-            throw new DataNotFoundException("Unable to retrieved questions, Not found any question.");
+        if (questions.isEmpty()) {
+            String message = "Not found any MCQ question.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         return questions;
     }
@@ -66,7 +61,9 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         Optional<MultipleChoiceQuestion> questionData = multipleChoiceQuestionRepository.findById(questionId);
 
         if (!questionData.isPresent()) {
-            throw new DataNotFoundException("This question Id is not present.");
+            String message = "This question Id: "+questionId+" is not found.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         return questionData.get();
     }
@@ -118,10 +115,13 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     public void deleteQuestion(Integer questionId) {
         Optional<MultipleChoiceQuestion> question = multipleChoiceQuestionRepository.findById(questionId);
         if (!question.isPresent()) {
-            throw new DataNotFoundException("This question Id is not found.");
+            String message = "This question Id: "+questionId+" is not found.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         question.get().setSubcategory(null);
         multipleChoiceQuestionRepository.deleteById(questionId);
+        logger.info("Question deleted of Id: {}", questionId);
     }
 
     @Override
@@ -147,54 +147,53 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
 
                     switch (columnIndex) {
                         case 1:
-                            String categoryName = currentCell.getStringCellValue();
-                            category = categoryRepository.findByCategoryNameIgnoreCase(categoryName)
+                            category = categoryRepository.findByCategoryNameIgnoreCase(currentCell.toString())
                                     .orElse(null);
                             if (category == null) {
                                 skipRow = true;
-                                logger.warn("Category not found for row {}: {}", rowIndex, categoryName);
+                                logger.error("Category not found: {}", currentCell.toString());
+                                throw new DataNotFoundException("Given Category '"+ currentCell.toString() +"' Not present in database");
                             }
                             break;
                         case 2:
                             if (!skipRow && category != null) {
-                                String subcategoryName = currentCell.getStringCellValue();
-                                subcategory = subCategoryRepository
-                                        .findBySubcategoryNameIgnoreCaseAndCategory(subcategoryName, category)
-                                        .orElse(null);
+                                subcategory = subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(currentCell.toString(), category)
+                                                            .orElse(null);
                                 if (subcategory == null) {
                                     skipRow = true;
-                                    logger.warn("Subcategory not found for row {}: {}", rowIndex, subcategoryName);
+                                    logger.error("Subcategory not found: {}", currentCell.toString());
+                                    throw new DataNotFoundException("Given Subcategory '"+ currentCell.toString() +"' is not present in '"+ category.getCategoryName() +"' category.");
                                 }
                             }
                             break;
                         case 3:
                             if (!skipRow) {
-                                mcqQuestion.setQuestion(currentCell.getStringCellValue());
+                                mcqQuestion.setQuestion(currentCell.toString());
                             }
                             break;
                         case 4:
                             if (!skipRow) {
-                                mcqQuestion.setOptionOne(currentCell.getStringCellValue());
+                                mcqQuestion.setOptionOne(currentCell.toString());
                             }
                             break;
                         case 5:
                             if (!skipRow) {
-                                mcqQuestion.setOptionTwo(currentCell.getStringCellValue());
+                                mcqQuestion.setOptionTwo(currentCell.toString());
                             }
                             break;
                         case 6:
                             if (!skipRow) {
-                                mcqQuestion.setOptionThree(currentCell.getStringCellValue());
+                                mcqQuestion.setOptionThree(currentCell.toString());
                             }
                             break;
                         case 7:
                             if (!skipRow) {
-                                mcqQuestion.setOptionFour(currentCell.getStringCellValue());
+                                mcqQuestion.setOptionFour(currentCell.toString());
                             }
                             break;
                         case 8:
                             if (!skipRow) {
-                                mcqQuestion.setCorrectOption(currentCell.getStringCellValue());
+                                mcqQuestion.setCorrectOption(currentCell.toString());
                             }
                             break;
                         case 9:

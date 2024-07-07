@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.exception.DataNotFoundException;
 import com.example.exception.DuplicateDataException;
-import com.example.exception.IllegalArgumentException;
 import com.example.model.Category;
 import com.example.repository.CategoryRepository;
 import com.example.service.CategoryService;
@@ -25,10 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(Category category) {
-        if (category == null) {
-            logger.error("Category should not be null.");
-            throw new IllegalArgumentException("Category should not be null");
-        }
+        logger.info("Saving category with name: {}", category.getCategoryName());
 
         if (categoryRepository.existsByCategoryNameIgnoreCase(category.getCategoryName())) {
             throw new DuplicateDataException("Category '" + category.getCategoryName() + "' already exists");
@@ -41,42 +37,46 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() {
-        try {
-            logger.info("Fetching all categories.");
-            List<Category> categories = categoryRepository.findAll();
-    
-            if (categories == null || categories.isEmpty()) {
-                throw new DataNotFoundException("Not found any category.");
-            }
-    
-            logger.info("Categories fetched: {}", categories.size());
-            return categories;
-        } catch (Exception ex) {
-            logger.error("Error occurred while fetching categories: {}", ex.getMessage());
-            throw new DataNotFoundException("Unable to fetch and retrieved all categories, Not found any category.");
+        logger.info("Fetching all categories.");
+        List<Category> categories = categoryRepository.findAll();
+        
+        if (categories.isEmpty()) {
+            throw new DataNotFoundException("Not found any category.");
         }
+    
+        logger.info("Categories fetched: {}", categories.size());
+        return categories;
     }
+    
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
         Optional<Category> categoryData = categoryRepository.findByCategoryNameIgnoreCase(categoryName);
         if(!categoryData.isPresent()){
-            throw new DataNotFoundException("This category is not present in database.");
+            String message = "Category '"+ categoryName +"' is not present in database.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         return categoryData.get();
     }
 
     @Override
     public Category updateCategory(Integer categoryId, Category updatedCategory) {
-        Optional<Category> existingCategoryOptional = categoryRepository.findById(categoryId);
-    
-        Category existingCategoryData = existingCategoryOptional.orElseThrow(() ->
-                                                                    new DataNotFoundException("Category with Id " + categoryId + " not found"));
-    
+
+        Category existingCategoryData = categoryRepository.findById(categoryId)
+                                .orElseThrow(() -> {
+                                    String message = "Category with id '"+ categoryId +"' is not present in database.";
+                                    logger.error(message);
+                                    return new DataNotFoundException(message);
+                                });
+
         if (!existingCategoryData.getCategoryName().equalsIgnoreCase(updatedCategory.getCategoryName())) {
             Optional<Category> categoryByNameOptional = categoryRepository.findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
+            
             if (categoryByNameOptional.isPresent()) {
-                throw new DuplicateDataException("Category with name '" + updatedCategory.getCategoryName() + "' already exists, along with Id number: " +categoryByNameOptional.get().getCategoryId());
+                String message = "Category with name '" + updatedCategory.getCategoryName() + "' already exists,  along with Id number: " +categoryByNameOptional.get().getCategoryId();
+                logger.error(message);
+                throw new DuplicateDataException(message);
             }
         }
 
