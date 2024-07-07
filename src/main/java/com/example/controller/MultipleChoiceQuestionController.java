@@ -78,9 +78,9 @@ public class MultipleChoiceQuestionController {
 
     @PostMapping("/saveBulkQuestions")
     public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) throws EncryptedDocumentException, IOException {
-            multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
-            SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), null);
-            return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
+        multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
+        SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), null);
+        return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
     }
 
 }
