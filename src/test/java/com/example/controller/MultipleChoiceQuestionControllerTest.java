@@ -91,7 +91,6 @@ public class MultipleChoiceQuestionControllerTest {
         int questionId = 1;
         MultipleChoiceQuestion updatedQuestion = new MultipleChoiceQuestion();
         updatedQuestion.setQuestionId(questionId);
-        // updatedQuestion.setSubcategory("Java");
         updatedQuestion.setQuestion("Question is a Question");
         updatedQuestion.setOptionOne("Option_1");
         updatedQuestion.setOptionTwo("Option_2");
@@ -127,7 +126,7 @@ public class MultipleChoiceQuestionControllerTest {
     }
 
     @Test
-    public void testuploadBulkQuestionsFromExcelFile() throws IOException {
+    public void testUploadBulkQuestionsFromExcelFile() throws IOException {
         // Mock MultipartFile
         MultipartFile excelFile = mock(MultipartFile.class);
 

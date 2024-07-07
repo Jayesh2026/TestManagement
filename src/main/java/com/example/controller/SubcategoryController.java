@@ -2,7 +2,6 @@ package com.example.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +25,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/subCategory")
 public class SubcategoryController {
 
-    @Autowired
-    SubCategoryService subCategoryService;
+    private SubCategoryService subCategoryService;
+
+    public SubcategoryController(SubCategoryService subCategoryService){
+        this.subCategoryService = subCategoryService;
+    }
 
     @PostMapping
     public ResponseEntity<SuccessResponse> saveSubCategory(@Valid @RequestBody SubCategory subCategory) {
@@ -45,16 +47,16 @@ public class SubcategoryController {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/{subCategoryId}")
-    public ResponseEntity<SuccessResponse> getSubCategoryById(@PathVariable("subCategoryId") Integer subCategoryId) {
+    @GetMapping("/{subCategory-id}")
+    public ResponseEntity<SuccessResponse> getSubCategoryById(@PathVariable("subCategory-id") Integer subCategoryId) {
         SubCategory subCategory = subCategoryService.getSubCategoryById(subCategoryId);
         SuccessResponse successResponse = new SuccessResponse("SubCategory retrieved Successfully.",
                 HttpStatus.OK.value(), subCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/{subCategoryId}")
-    public ResponseEntity<SuccessResponse> updateSubCategory(@PathVariable("subCategoryId") Integer subCategoryId,
+    @PutMapping("/{subCategory-id}")
+    public ResponseEntity<SuccessResponse> updateSubCategory(@PathVariable("subCategory-id") Integer subCategoryId,
             @Valid @RequestBody SubCategory subCategoryUpdate) {
         SubCategory updatedSubCategory = subCategoryService.updateSubCategory(subCategoryId, subCategoryUpdate);
         SuccessResponse successResponse = new SuccessResponse("SubCategory updated Successfully.",
@@ -62,8 +64,8 @@ public class SubcategoryController {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{subCategoryId}")
-    public ResponseEntity<SuccessResponse> deleteSubCategory(@PathVariable("subCategoryId") Integer subCategoryId) {
+    @DeleteMapping("/{subCategory-id}")
+    public ResponseEntity<SuccessResponse> deleteSubCategory(@PathVariable("subCategory-id") Integer subCategoryId) {
         subCategoryService.deleteSubCategory(subCategoryId);
         SuccessResponse successResponse = new SuccessResponse();
         successResponse.setMessage("SubCategory deleted successfully");

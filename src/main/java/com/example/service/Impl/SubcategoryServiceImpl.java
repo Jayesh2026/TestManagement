@@ -2,7 +2,6 @@ package com.example.service.Impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.DataNotFoundException;
@@ -21,15 +20,17 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     private final static Logger logger = LoggerFactory.getLogger(SubCategoryServiceImpl.class);
 
-    @Autowired
-    SubCategoryRepository subCategoryRepository;
-
-    @Autowired
+    private SubCategoryRepository subCategoryRepository;
     private CategoryRepository categoryRepository;
+
+    public SubCategoryServiceImpl(SubCategoryRepository subCategoryRepository, CategoryRepository categoryRepository){
+        this.subCategoryRepository = subCategoryRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public SubCategory saveSubCategory(SubCategory subCategory) {
-
+        logger.info("Saving Subcategory");
         Category category = categoryRepository.findById(subCategory.getCategory().getCategoryId())
                 .orElseThrow(() -> {
                     String message = "Category with ID " + subCategory.getCategory().getCategoryId() + " not found.";
@@ -61,7 +62,6 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         return savedSubCategory;
     }
     
-
     @Override
     public List<SubCategory> getAllSubCategories() {
         logger.info("Fetching all Subcategories.");
@@ -116,9 +116,12 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     @Override
     public void deleteSubCategory(Integer subCategoryId) {
         SubCategory subCategory = subCategoryRepository.findBySubcategoryId(subCategoryId)
-                .orElseThrow(() -> new DataNotFoundException("SubCategory with id " + subCategoryId + " not found"));
+                .orElseThrow(() -> {
+                    String message = "SubCategory with id " + subCategoryId + " not found";
+                    logger.error(message);
+                    return new DataNotFoundException(message);
+                });
 
-        // Remove the association with Category to avoid foreign key constraint violation
         subCategory.setCategory(null);
         subCategoryRepository.deleteById(subCategoryId);
         logger.info("SubCategory deleted of Id: {}", subCategoryId);

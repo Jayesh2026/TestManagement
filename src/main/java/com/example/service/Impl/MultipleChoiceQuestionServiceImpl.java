@@ -12,7 +12,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,14 +29,15 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
 
     public static final Logger logger = LoggerFactory.getLogger(MultipleChoiceQuestionServiceImpl.class);
 
-    @Autowired
-    MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+    private MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+    private SubCategoryRepository subCategoryRepository;
+    private CategoryRepository categoryRepository;
 
-    @Autowired
-    SubCategoryRepository subCategoryRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
+    public MultipleChoiceQuestionServiceImpl(MultipleChoiceQuestionRepository multipleChoiceQuestionRepository, SubCategoryRepository subCategoryRepository, CategoryRepository categoryRepository){
+        this.multipleChoiceQuestionRepository = multipleChoiceQuestionRepository;
+        this.subCategoryRepository = subCategoryRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public MultipleChoiceQuestion saveQuestion(MultipleChoiceQuestion question) {

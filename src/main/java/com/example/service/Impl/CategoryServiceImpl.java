@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.DataNotFoundException;
@@ -19,15 +18,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final static Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
-    @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository){
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public Category createCategory(Category category) {
         logger.info("Saving category with name: {}", category.getCategoryName());
 
         if (categoryRepository.existsByCategoryNameIgnoreCase(category.getCategoryName())) {
-            throw new DuplicateDataException("Category '" + category.getCategoryName() + "' already exists");
+            String message = "Category '" + category.getCategoryName() + "' already exists";
+            logger.error(message);
+            throw new DuplicateDataException(message);
         }
 
         Category savedCategory = categoryRepository.save(category);
@@ -41,7 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categories = categoryRepository.findAll();
         
         if (categories.isEmpty()) {
-            throw new DataNotFoundException("Not found any category.");
+            String message = "Not found any category.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
     
         logger.info("Categories fetched: {}", categories.size());
@@ -51,52 +57,53 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) {
-        Optional<Category> categoryData = categoryRepository.findByCategoryNameIgnoreCase(categoryName);
-        if(!categoryData.isPresent()){
+        Optional<Category> category = categoryRepository.findByCategoryNameIgnoreCase(categoryName);
+        if(!category.isPresent()){
             String message = "Category '"+ categoryName +"' is not present in database.";
             logger.error(message);
             throw new DataNotFoundException(message);
         }
-        return categoryData.get();
+        return category.get();
     }
 
     @Override
     public Category updateCategory(Integer categoryId, Category updatedCategory) {
 
-        Category existingCategoryData = categoryRepository.findById(categoryId)
+        Category existingCategory = categoryRepository.findById(categoryId)
                                 .orElseThrow(() -> {
                                     String message = "Category with id '"+ categoryId +"' is not present in database.";
                                     logger.error(message);
                                     return new DataNotFoundException(message);
                                 });
 
-        if (!existingCategoryData.getCategoryName().equalsIgnoreCase(updatedCategory.getCategoryName())) {
+        if (!existingCategory.getCategoryName().equalsIgnoreCase(updatedCategory.getCategoryName())) {
             Optional<Category> categoryByNameOptional = categoryRepository.findByCategoryNameIgnoreCase(updatedCategory.getCategoryName());
             
             if (categoryByNameOptional.isPresent()) {
-                String message = "Category with name '" + updatedCategory.getCategoryName() + "' already exists,  along with Id number: " +categoryByNameOptional.get().getCategoryId();
+                String message = "Category with name '" + updatedCategory.getCategoryName() + "' already exists, along with Id number: " +categoryByNameOptional.get().getCategoryId();
                 logger.error(message);
                 throw new DuplicateDataException(message);
             }
         }
 
-        // Update fields conditionally
         if (updatedCategory.getCategoryName() != null) {
-            existingCategoryData.setCategoryName(updatedCategory.getCategoryName());
+            existingCategory.setCategoryName(updatedCategory.getCategoryName());
         }
         if (updatedCategory.getCategoryDescription() != null) {
-            existingCategoryData.setCategoryDescription(updatedCategory.getCategoryDescription());
+            existingCategory.setCategoryDescription(updatedCategory.getCategoryDescription());
         }
-        Category categoryUpdated = categoryRepository.save(existingCategoryData);
+        Category categoryUpdated = categoryRepository.save(existingCategory);
         logger.info("Category updated of Id: {}", categoryId);
         return categoryUpdated;
     }
 
     @Override
     public void deleteCategoryById(Integer categoryId) {
-        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        if (!optionalCategory.isPresent()) {
-            throw new DataNotFoundException("Category with Id " + categoryId + " not found");
+        Optional<Category> category = categoryRepository.findById(categoryId);
+        if (!category.isPresent()) {
+            String message = "Category with Id '"+ categoryId +"' is not present in database.";
+            logger.error(message);
+            throw new DataNotFoundException(message);
         }
         categoryRepository.deleteById(categoryId);
         logger.info("Category deleted of Id: {}", categoryId);

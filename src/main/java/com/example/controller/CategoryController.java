@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,8 +26,11 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
+    
+    public CategoryController(CategoryService categoryService){
+        this.categoryService = categoryService;
+    }
 
     @PostMapping
     public ResponseEntity<SuccessResponse> createCategory(@Valid @RequestBody Category category) {
@@ -45,21 +47,21 @@ public class CategoryController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<SuccessResponse> getCategoryByName(@RequestParam("categoryName") String categoryName) {
+    public ResponseEntity<SuccessResponse> getCategoryByName(@RequestParam("category-name") String categoryName) {
         Category category = categoryService.getCategoryByCategoryName(categoryName);
         SuccessResponse successResponse = new SuccessResponse("Category is retrieved successfully.", HttpStatus.FOUND.value(), category);
         return new ResponseEntity<>(successResponse, HttpStatus.FOUND);
     }
 
-    @PutMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("categoryId") Integer categoryId, @Valid @RequestBody Category category) {
+    @PutMapping("/{category-id}")
+    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("category-id") Integer categoryId, @Valid @RequestBody Category category) {
         Category updateCategory = categoryService.updateCategory(categoryId, category);
         SuccessResponse successResponse = new SuccessResponse("Category updated successfully.", HttpStatus.OK.value(), updateCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponse> deleteCategoryById(@PathVariable("categoryId") Integer categoryId) {
+    @DeleteMapping("/{category-id}")
+    public ResponseEntity<SuccessResponse> deleteCategoryById(@PathVariable("category-id") Integer categoryId) {
         categoryService.deleteCategoryById(categoryId);
         SuccessResponse successResponse = new SuccessResponse();
         successResponse.setMessage("Category deleted successfully");

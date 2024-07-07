@@ -1,10 +1,7 @@
 package com.example.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +28,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/questions")
 public class MultipleChoiceQuestionController {
 
-    @Autowired
-    MultipleChoiceQuestionService multipleChoiceQuestionService;
+    private MultipleChoiceQuestionService multipleChoiceQuestionService;
+
+    public MultipleChoiceQuestionController(MultipleChoiceQuestionService multipleChoiceQuestionService) {
+        this.multipleChoiceQuestionService = multipleChoiceQuestionService;
+    }
 
     @PostMapping
     public ResponseEntity<SuccessResponse> saveQuestion(@Valid @RequestBody MultipleChoiceQuestion question) {
@@ -44,22 +44,22 @@ public class MultipleChoiceQuestionController {
 
     @GetMapping("/")
     public ResponseEntity<SuccessResponse> getAllQuestionsData() {
-        List<MultipleChoiceQuestion> allQuestions = multipleChoiceQuestionService.getAllQuestionsData();
+        List<MultipleChoiceQuestion> questionsList = multipleChoiceQuestionService.getAllQuestionsData();
         SuccessResponse successResponse = new SuccessResponse("All Questions data retrieved successfully.",
-                HttpStatus.OK.value(), allQuestions);
+                HttpStatus.OK.value(), questionsList);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/{questionId}")
-    public ResponseEntity<SuccessResponse> getQuestionById(@PathVariable("questionId") Integer questionId) {
+    @GetMapping("/{question-id}")
+    public ResponseEntity<SuccessResponse> getQuestionById(@PathVariable("question-id") Integer questionId) {
         MultipleChoiceQuestion question = multipleChoiceQuestionService.getQuestionData(questionId);
         SuccessResponse successResponse = new SuccessResponse("Question found and retrieved successfully.",
                 HttpStatus.FOUND.value(), question);
         return new ResponseEntity<>(successResponse, HttpStatus.FOUND);
     }
 
-    @PutMapping("/{questionId}")
-    public ResponseEntity<SuccessResponse> updateQuestion(@PathVariable("questionId") Integer questionId,
+    @PutMapping("/{question-id}")
+    public ResponseEntity<SuccessResponse> updateQuestion(@PathVariable("question-id") Integer questionId,
             @Valid @RequestBody MultipleChoiceQuestion question) {
         MultipleChoiceQuestion updatedQuestion = multipleChoiceQuestionService.updateQuestion(questionId, question);
         SuccessResponse successResponse = new SuccessResponse("Question data updated successfully.",
@@ -67,8 +67,8 @@ public class MultipleChoiceQuestionController {
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{questionId}")
-    public ResponseEntity<SuccessResponse> deleteQuestionById(@PathVariable("questionId") Integer questionId) {
+    @DeleteMapping("/{question-id}")
+    public ResponseEntity<SuccessResponse> deleteQuestionById(@PathVariable("question-id") Integer questionId) {
         multipleChoiceQuestionService.deleteQuestion(questionId);
         SuccessResponse successResponse = new SuccessResponse();
         successResponse.setMessage("Question deleted successfully");
@@ -77,7 +77,7 @@ public class MultipleChoiceQuestionController {
     }
 
     @PostMapping("/saveBulkQuestions")
-    public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) throws EncryptedDocumentException, IOException {
+    public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
         multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
         SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), null);
         return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
