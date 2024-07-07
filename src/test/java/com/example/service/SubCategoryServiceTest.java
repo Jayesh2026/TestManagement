@@ -43,14 +43,14 @@ public class SubCategoryServiceTest {
         Category category = new Category(1, "Category_1", "Category details");
         SubCategory subCategory = new SubCategory(1, "SubCategory_1", "SubCategory Details", category);
 
-        when(categoryRepository.findByCategoryIdAndCategoryNameIgnoreCase(category.getCategoryId(), category.getCategoryName())).thenReturn(Optional.of(category));
-        when(subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(subCategory.getSubcategoryName(), category))
-                                                                .thenReturn(Optional.empty()); // No existing subcategory with the same name
+        when(categoryRepository.findById(category.getCategoryId())).thenReturn(Optional.of(category));
+        when(subCategoryRepository.findBySubcategoryNameIgnoreCaseAndCategory(subCategory.getSubcategoryName(),category))
+                                        .thenReturn(Optional.empty()); // No existing subcategory with the same name
         when(subCategoryRepository.save(subCategory)).thenReturn(subCategory);
 
         SubCategory savedSubCategory = subCategoryServiceImpl.saveSubCategory(subCategory);
 
-        verify(categoryRepository, times(1)).findByCategoryIdAndCategoryNameIgnoreCase(category.getCategoryId(), category.getCategoryName());
+        verify(categoryRepository, times(1)).findById(category.getCategoryId());
         verify(subCategoryRepository, times(1)).findBySubcategoryNameIgnoreCaseAndCategory(subCategory.getSubcategoryName(), category);
         verify(subCategoryRepository, times(1)).save(subCategory);
 
@@ -106,7 +106,8 @@ public class SubCategoryServiceTest {
     @Test
     public void testDeleteSubCategory() {
         Integer subCategoryId = 1;
-        SubCategory subCategory = new SubCategory(subCategoryId, "SubCategory_1", "SubCategory Details", new Category());
+        SubCategory subCategory = new SubCategory(subCategoryId, "SubCategory_1", "SubCategory Details",
+                new Category());
 
         when(subCategoryRepository.findBySubcategoryId(subCategoryId)).thenReturn(Optional.of(subCategory));
         doNothing().when(subCategoryRepository).deleteById(subCategoryId);
