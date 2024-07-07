@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,9 @@ import com.example.model.SubCategory;
 import com.example.response.SuccessResponse;
 import com.example.service.SubCategoryService;
 
+import jakarta.validation.Valid;
+
+@Validated
 @RestController
 @RequestMapping("/api/subCategory")
 public class SubcategoryController {
@@ -26,7 +30,7 @@ public class SubcategoryController {
     SubCategoryService subCategoryService;
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> saveSubCategory(@RequestBody SubCategory subCategory) {
+    public ResponseEntity<SuccessResponse> saveSubCategory(@Valid @RequestBody SubCategory subCategory) {
         SubCategory savedSubCategory = subCategoryService.saveSubCategory(subCategory);
         SuccessResponse successResponse = new SuccessResponse("SubCategory created Successfully.",
                 HttpStatus.CREATED.value(), savedSubCategory);
@@ -51,7 +55,7 @@ public class SubcategoryController {
 
     @PutMapping("/{subCategoryId}")
     public ResponseEntity<SuccessResponse> updateSubCategory(@PathVariable("subCategoryId") Integer subCategoryId,
-            @RequestBody SubCategory subCategoryUpdate) {
+            @Valid @RequestBody SubCategory subCategoryUpdate) {
         SubCategory updatedSubCategory = subCategoryService.updateSubCategory(subCategoryId, subCategoryUpdate);
         SuccessResponse successResponse = new SuccessResponse("SubCategory updated Successfully.",
                 HttpStatus.OK.value(), updatedSubCategory);

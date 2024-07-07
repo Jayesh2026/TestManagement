@@ -1,12 +1,13 @@
 package com.example.controller;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.poi.EncryptedDocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,21 +20,22 @@ import com.example.model.MultipleChoiceQuestion;
 import com.example.response.SuccessResponse;
 import com.example.service.MultipleChoiceQuestionService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+@Validated
 @RestController
 @RequestMapping("/api/questions")
 public class MultipleChoiceQuestionController {
-
-    private static final Logger logger = LoggerFactory.getLogger(MultipleChoiceQuestionController.class);
 
     @Autowired
     MultipleChoiceQuestionService multipleChoiceQuestionService;
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> saveQuestion(@RequestBody MultipleChoiceQuestion question) {
+    public ResponseEntity<SuccessResponse> saveQuestion(@Valid @RequestBody MultipleChoiceQuestion question) {
         MultipleChoiceQuestion questionSaved = multipleChoiceQuestionService.saveQuestion(question);
         SuccessResponse successResponse = new SuccessResponse("Question created Successfully",
                 HttpStatus.CREATED.value(), questionSaved);
@@ -58,7 +60,7 @@ public class MultipleChoiceQuestionController {
 
     @PutMapping("/{questionId}")
     public ResponseEntity<SuccessResponse> updateQuestion(@PathVariable("questionId") Integer questionId,
-            @RequestBody MultipleChoiceQuestion question) {
+            @Valid @RequestBody MultipleChoiceQuestion question) {
         MultipleChoiceQuestion updatedQuestion = multipleChoiceQuestionService.updateQuestion(questionId, question);
         SuccessResponse successResponse = new SuccessResponse("Question data updated successfully.",
                 HttpStatus.OK.value(), updatedQuestion);
@@ -75,16 +77,10 @@ public class MultipleChoiceQuestionController {
     }
 
     @PostMapping("/saveBulkQuestions")
-    public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
-        try {
+    public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) throws EncryptedDocumentException, IOException {
             multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
             SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), null);
             return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
-        } catch (Exception exception) {
-            logger.error(exception.getMessage(), exception);
-            SuccessResponse successResponse = new SuccessResponse("Unable to Upload question: "+ exception.getMessage(), 400, null);
-            return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.BAD_REQUEST);
-        }
     }
 
 }
