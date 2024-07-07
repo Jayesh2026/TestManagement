@@ -3,6 +3,7 @@ package com.example.controller;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.model.Category;
 import com.example.model.MultipleChoiceQuestion;
@@ -122,5 +124,23 @@ public class MultipleChoiceQuestionControllerTest {
 
         assertEquals(expectedResult, response);
         verify(multipleChoiceQuestionService, times(1)).deleteQuestion(questionId);
+    }
+
+    @Test
+    public void testuploadBulkQuestionsFromExcelFile() throws IOException {
+        // Mock MultipartFile
+        MultipartFile excelFile = mock(MultipartFile.class);
+
+        doNothing().when(multipleChoiceQuestionService).uploadBulkQuestionsFromExcelFile(excelFile);
+
+        SuccessResponse successResponse = new SuccessResponse();
+        successResponse.setMessage("Question Data Uploaded Successfully.");
+        successResponse.setStatusCode(HttpStatus.OK.value());
+        ResponseEntity<SuccessResponse> expectedResult = new ResponseEntity<>(successResponse, HttpStatus.OK);
+        ResponseEntity<SuccessResponse> response = multipleChoiceQuestionController.uploadBulkQuestions(excelFile);
+
+        assertEquals(expectedResult, response);
+        verify(multipleChoiceQuestionService, times(1)).uploadBulkQuestionsFromExcelFile(excelFile);
+
     }
 }
