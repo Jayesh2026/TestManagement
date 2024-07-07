@@ -14,11 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.example.model.Category;
 import com.example.model.MultipleChoiceQuestion;
 import com.example.model.SubCategory;
+import com.example.repository.CategoryRepository;
 import com.example.repository.MultipleChoiceQuestionRepository;
+import com.example.repository.SubCategoryRepository;
 import com.example.service.Impl.MultipleChoiceQuestionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +27,12 @@ public class MultipleChoiceQuestionServiceTest {
 
     @Mock
     MultipleChoiceQuestionRepository multipleChoiceQuestionRepository;
+
+    @Mock
+    CategoryRepository categoryRepository;
+
+    @Mock
+    SubCategoryRepository subCategoryRepository;
 
     @InjectMocks
     MultipleChoiceQuestionServiceImpl multipleChoiceQuestionService;
@@ -108,5 +115,6 @@ questionList.add(new MultipleChoiceQuestion(1,  "save question 2", "option A1", 
         verify(multipleChoiceQuestionRepository, times(1)).findById(questionId);
         verify(multipleChoiceQuestionRepository, times(1)).save(updatedQuestionData);
     }
+
 
 }
