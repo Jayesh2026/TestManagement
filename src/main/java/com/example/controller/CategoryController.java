@@ -3,6 +3,7 @@ package com.example.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +18,11 @@ import com.example.model.Category;
 import com.example.response.SuccessResponse;
 import com.example.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
@@ -27,7 +31,7 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> createCategory(@RequestBody Category category) {
+    public ResponseEntity<SuccessResponse> createCategory(@Valid @RequestBody Category category) {
         Category savedCategory = categoryService.createCategory(category);
         SuccessResponse successResponse = new SuccessResponse("Category created Successfully.", HttpStatus.CREATED.value(), savedCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
@@ -48,7 +52,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("categoryId") Integer categoryId, @RequestBody Category category) {
+    public ResponseEntity<SuccessResponse> updateCategory(@PathVariable("categoryId") Integer categoryId, @Valid @RequestBody Category category) {
         Category updateCategory = categoryService.updateCategory(categoryId, category);
         SuccessResponse successResponse = new SuccessResponse("Category updated successfully.", HttpStatus.OK.value(), updateCategory);
         return new ResponseEntity<>(successResponse, HttpStatus.OK);
