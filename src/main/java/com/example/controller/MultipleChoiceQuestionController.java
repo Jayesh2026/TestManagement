@@ -78,8 +78,8 @@ public class MultipleChoiceQuestionController {
 
     @PostMapping("/saveBulkQuestions")
     public ResponseEntity<SuccessResponse> uploadBulkQuestions(@RequestParam("file") MultipartFile file) {
-        multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
-        SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), null);
+        List<MultipleChoiceQuestion> questionList = multipleChoiceQuestionService.uploadBulkQuestionsFromExcelFile(file);
+        SuccessResponse successResponse = new SuccessResponse("Question Data Uploaded Successfully.", HttpStatus.OK.value(), questionList);
         return new ResponseEntity<SuccessResponse>(successResponse, HttpStatus.OK);
     }
 

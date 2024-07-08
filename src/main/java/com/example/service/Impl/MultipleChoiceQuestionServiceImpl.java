@@ -125,7 +125,7 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
     }
 
     @Override
-    public void uploadBulkQuestionsFromExcelFile(MultipartFile multipartFile) {
+    public List<MultipleChoiceQuestion> uploadBulkQuestionsFromExcelFile(MultipartFile multipartFile) {
         List<MultipleChoiceQuestion> questionsList = new ArrayList<>();
         
         try (Workbook workbook = WorkbookFactory.create(multipartFile.getInputStream())) {
@@ -144,6 +144,9 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
 
                 for (int columnIndex = currentRow.getFirstCellNum(); columnIndex <= currentRow.getLastCellNum(); columnIndex++) {
                     Cell currentCell = currentRow.getCell(columnIndex);
+                    if (currentCell == null) {
+                        continue;
+                    }
 
                     switch (columnIndex) {
                         case 1:
@@ -219,6 +222,11 @@ public class MultipleChoiceQuestionServiceImpl implements MultipleChoiceQuestion
         }catch (IOException e){
             logger.error("Error failed to read or upload file {}: {}", multipartFile.getOriginalFilename(), e.getMessage());
         }
+
+        return questionsList;
+        
     }
+
+    
 
 }

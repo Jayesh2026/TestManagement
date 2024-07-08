@@ -23,5 +23,5 @@ public interface MultipleChoiceQuestionService {
     // delete question by ID
     public void deleteQuestion(Integer questionId);
 
-    public void uploadBulkQuestionsFromExcelFile(MultipartFile multipartFile);
+    public List<MultipleChoiceQuestion> uploadBulkQuestionsFromExcelFile(MultipartFile multipartFile);
 }
